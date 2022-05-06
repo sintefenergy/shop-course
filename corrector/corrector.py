@@ -1,17 +1,17 @@
 from IPython.display import display, HTML
 import ipywidgets as widgets
 
-def check_answer(correct, actual, wrong_text):
-    if correct == actual:
-        return True, '' #f'<h4><span class="check">&#10003;</span> {correct_text}</h4>'
-    else:
-        return False, wrong_text
+# def check_answer(correct, actual, wrong_text):
+#     if correct == actual:
+#         return True, '' #f'<h4><span class="check">&#10003;</span> {correct_text}</h4>'
+#     else:
+#         return False, wrong_text
     
-def check_answer_show_correct_wrong(correct, actual, wrong_text):
-    if correct == actual:
-        return True, '' #f'<h4><span class="check">&#10003;</span> {correct_text}</h4>'
-    else:
-        return False, f'{wrong_text}. You entered {str(actual)}, the correct value is {str(correct)}'
+# def check_answer_show_correct_wrong(correct, actual, wrong_text):
+#     if correct == actual:
+#         return True, '' #f'<h4><span class="check">&#10003;</span> {correct_text}</h4>'
+#     else:
+#         return False, f'{wrong_text}. You entered {str(actual)}, the correct value is {str(correct)}'
         
 def generate_button(shop, corrector_function):
     button = widgets.Button(
