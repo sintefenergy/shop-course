@@ -159,12 +159,19 @@ Each attribute is one of the following datatypes: int, int_array, double, double
 
 #### Exercise
 Run the code below to set the reservoir `hrl`. Complete the code and set the values according to the table below:
-|Object|Attribute         |Value|
-|------|------------------|-----|
-|Rsv1  |lrl               |860  |
-|Rsv1  |start_head        |900  |
-|Rsv1  |energy_value_input|30   |
-|Plant1|outlet_line       |670  |
+|Object   |Attribute         |Value  |
+|---------|------------------|-------|
+|Rsv1     |lrl               |860    |
+|Rsv1     |start_head        |900    |
+|Rsv1     |energy_value_input|30     |
+|Plant1   |outlet_line       |670    |
+|Plant1   |penstock_loss     |[0.001]|
+|Plant1_G1|penstock          |1      |
+|Plant1_G1|p_min             |60     |
+|Plant1_G1|p_nom             |120    |
+|Plant1_G1|p_max             |120    |
+
+Outlet line denotes the altitude of the plant outlet. If there is no reservoir below, or the reservoir level is less than this, this is the plant downstream head. `penstock_loss` is the loss coefficient of the plant penstocks. The number of elements in the array represents the number of penstocks. `penstock` denotes which penstock the respective generator is connected to.
 
 ```{code-cell} ipython3
 shop.model.reservoir.Rsv1.hrl.set(905)
@@ -174,6 +181,42 @@ shop.model.reservoir.Rsv1.lrl.set(860)
 shop.model.reservoir.Rsv1.start_head.set(900)
 shop.model.reservoir.Rsv1.energy_value_input.set(30)
 shop.model.plant.Plant1.outlet_line.set(670)
+shop.model.plant.Plant1.penstock_loss.set([0.001])
+shop.model.generator.Plant1_G1.penstock.set(1)
 
 check_attribute_values1(shop)
 ```
+
+### Setting tables and timeseries values
+pySHOP uses pandas for setting more complex data structures like tables and timeseries. The `pandas.Series` can be used to represent a simple table with indexed values. Execute the code below to create a pandas series describing the relation between reservoir volume and head, and to visualize it with the built-in plotting function in pandas.
+
+```{code-cell} ipython3
+vol_head = pd.Series(
+    index = [0, 0.91, 1.87, 2.88, 5.07, 6.27, 7.56, 8.91, 10.34, 11.87, 13.53, 15.27, 17.11, 19.05, 21.1, 25.65, 27.96, 30.36, 35.18, 37.68, 39, 41.66],
+    data = [860, 862, 864, 866, 870, 872, 874, 876, 878, 880, 882, 884, 886, 888, 890, 894, 896, 898, 902, 904, 905, 907]
+)
+vol_head.plot()
+```
+
+We can define timeseries in a similar manner, but where the index must be `Timestamp` values instead of numbers. The code below shows how to define a simple timeseries using the `starttime` variable we defined in the beginning. Note that if all time steps are note specified, SHOP will assume the missing values are given by the previous known timestep (often referred to as forward fill interpolation/extrapolation).
+
+```{code-cell} ipython3
+example_txy = pd.Series(
+    data=[0, 50, 50],
+    index=[starttime, starttime+pd.Timedelta(hours=5), endtime]
+)
+example_txy.plot()
+```
+
+#### Excercise
+Set the reservoir vol_head attribute to the `vol_head` curve defined above. Set the reservoir `inflow` attribute to 60 the first 12 hours and the reduce it to 30 for the remaining timesteps.
+
+```{code-cell} ipython3
+## REMOVE
+shop.model.reservoir.Rsv1.vol_head.set(vol_head)
+shop.model.reservoir.Rsv1.inflow.set(pd.Series(data=[60, 30], index=[starttime, starttime+pd.Timedelta(hours=12)]))
+
+# check_tables1(shop)
+```
+
+### Turbine efficiency curves
