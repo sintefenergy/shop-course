@@ -6,7 +6,7 @@ jupytext:
     format_version: 0.13
     jupytext_version: 1.13.8
 kernelspec:
-  display_name: Python 3 (ipykernel)
+  display_name: Python 3.10.2 64-bit
   language: python
   name: python3
 ---
@@ -42,7 +42,7 @@ Run the code below as shown a follow the instructions to build and run your firs
 ```{code-cell} ipython3
 import pandas as pd
 from pyshop import ShopSession
-from corrector.corrector import *
+from corrector.basic import *
 ```
 
 To instantiate a new `ShopSession`, we simply call the class by appending the parantheses and assign the created session to the variable `shop`.
@@ -54,6 +54,7 @@ shop = ShopSession()
 ### Setting the time horizon
 The time horizon, start and end time of the optimization, must be defined before adding any data by calling the `set_time_resolution` function as shown in the example below. We create a `Timestamp`, which is a object type in the pandas library and assign it the the variable `starttime`.
 
+#### Exercise
 Complete the code by filling the missing `***`:
 - create a new `Timestamp` named `endtime` 2 days later than `starttime`.
 - fill in the missing argument to `set_time_resolution`.
@@ -61,18 +62,10 @@ Complete the code by filling the missing `***`:
 
 ```{code-cell} ipython3
 starttime = pd.Timestamp('2022-01-01')
-endtime = pd.Timestamp(***)
-shop.set_time_resolution(starttime=starttime, endtime=***, timeunit='hour')
-```
+endtime = pd.Timestamp('2022-01-03')
+shop.set_time_resolution(starttime=starttime, endtime=endtime, timeunit='hour')
 
-```{code-cell} ipython3
----
-jupyter:
-  source_hidden: true
-tags: []
----
-button, output = generate_button(shop, check_time_resolution)
-display(button, output)
+check_time_resolution(shop)
 ```
 
 +++ {"tags": []}
@@ -90,31 +83,97 @@ All model building related features are located on the `model` object that is a 
 ```{code-cell} ipython3
 shop.model
 ```
+
 A SHOP model comprises multiple objects, both physical objects in the watercourse like reservoirs, plants and generators as well as more abstract objects types like markets and discharge_groups. Create a new `reservoir` by executing the code below.
 
 ```{code-cell} ipython3
 rsv1 = shop.model.reservoir.add_object('Rsv1')
 ```
 
+#### Excercise
 Complete the code below to create a minimal working example:
 - create a `plant` named `'Plant1'`
 - create a `generator` named `'Plant1_G1'`
 
 ```{code-cell} ipython3
-plant1 = shop.model.plant.add_object(___)
-___
+# plant1 = shop.model.plant.add_object(___)
+# ___
+
+## REMOVE
+plant1 = shop.model.plant.add_object('Plant1')
+gen1 = shop.model.generator.add_object('Plant1_G1')
+
+check_plant_and_generator_added(shop)
 ```
 
+### Connecting objects
+Model relations are used both to connect the objects in the water course and to group objects logically. Execute the code below to connect your `reservoir` named `Rsv1` to the downstream `plant` named `Plant1`.
+
 ```{code-cell} ipython3
----
-jupyter:
-  source_hidden: true
-tags: []
----
-button, output = generate_button(shop, check_plant_and_generator_added)
-display(button, output)
+rsv1.connect_to(plant1)
 ```
 
-```{code-cell} ipython3
+In the case above, the objects we are connecting are stored in the variables `rsv1` and `plant1` respectively. Alternatively, you can also look up the objects directly in SHOP. The following code lines are all equivalent with the code we just executed:
+```python
+shop.model.reservoir.Rsv1.connect_to(shop.model.plant.Plant1)
+shop.model.reservoir['Rsv1'].connect_to(shop.model.plant['Plant1'])
+```
 
+The `['<ObjectName>']` syntax is a alternative to `.<ObjectName>` in situations where the object name contains characters that has a special meaning in Python such as `-()`, or if you are looking up as a part of a for-loop.
+
++++
+
+#### Exercise
+Complete the code below by connecting your `generator` and `plant` with your preferred code syntax.
+
+```{code-cell} ipython3
+# ***.connect_to(***)
+
+## REMOVE
+shop.model.generator.Plant1_G1.connect_to(plant1)
+
+check_plant_and_generator_connected(shop)
+```
+
+### Drawing topology
+Once your model is built, you can use the topology builder to visualize it. Exececute the code below to verify that the reservoir and plant has been connected correctly.
+
+```{code-cell} ipython3
+shop.model.build_connection_tree()
+```
+
+### Setting model attributes
+The different objects in SHOP are parameterized through different attributes. You can use pySHOP to view all available attributes for the respective object types. Execute the code below to list all available attribute types for `reservoir`. Repeat for `plant`.
+
+```{code-cell} ipython3
+shop.model.reservoir.get_attribute_names()
+```
+
+You can also get more detailed info about the respective attributes. Exectue the code below to show information about the `reservoir` attribute `lrl`. To create a minimal running example, we will set the attributes `lrl`, `hrl`, `max_vol`, `vol_head`, `flow_descr` and `inflow`. Check the information for each of these yourself.
+
+```{code-cell} ipython3
+shop.model.reservoir.Rsv1.lrl.info()
+```
+
+Each attribute is one of the following datatypes: int, int_array, double, double_array, txy (timeseries), xy (table), xy_array (list of tables), string, string_array, sy (table where the first column is a string). We use the `set()` function to set attribute values in SHOP.
+
+#### Exercise
+Run the code below to set the reservoir `hrl`. Complete the code and set the values according to the table below:
+|Object|Attribute         |Value|
+|------|------------------|-----|
+|Rsv1  |lrl               |860  |
+|Rsv1  |start_head        |900  |
+|Rsv1  |energy_value_input|30   |
+|Plant1|outlet_line       |670  |
+
+```{code-cell} ipython3
+shop.model.reservoir.Rsv1.hrl.set(905)
+
+## REMOVE
+shop.model.reservoir.Rsv1.lrl.set(860)
+shop.model.reservoir.Rsv1.start_head.set(900)
+shop.model.reservoir.Rsv1.energy_value_input.set(30)
+shop.model.plant.Plant1.outlet_line.set(670)
+
+check_attribute_values1(shop)
 ```
