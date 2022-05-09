@@ -18,7 +18,7 @@ If you have low previous knowledge about programming and Python, we recommend to
 Python has, due to its simplicity, become on of the most used programming languages. Python has a built-in package manager where more than 200.000 packages can be installed by simply typing `pip install <package name>` in your terminal. This makes Python very well suited for gluing different component in your SHOP testing environment. [pandas](https://pandas.pydata.org/) is an open source library for managing structured data, and is used timeseries and curves in pySHOP. 
 
 This course gives a introduction to the basic building blocks for pySHOP and will show you some of the powerfull features in scripting SHOP from Python. The course is divided into the following sections:
-- [Time interval and resolution](#time)
+- [Time interval and resolution](time)
 - [Objects](objects)
 - [Attributes](attributes)
 - [Relations](relations)
