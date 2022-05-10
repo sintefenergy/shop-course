@@ -1,0 +1,25 @@
+name: Build course
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    image: shopjupyterhubacr.azurecr.io/shop/linux/python3.9/vlab:latest
+      options: --user root -e GRANT_SUDO=yes
+      credentials:
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build book
+        run: jupyter book build .
+      - name: Upload to portal
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: shop.sintef.energy
+          username: ${{ secrets.SHOP_PORTAL_FTP_USERNAME }}
+          password: ${{ secrets.SHOP_PORTAL_FTP_PASSWORD }}
+          local-dir: ./_build/html/
+          server-dir: doc/course/html/
