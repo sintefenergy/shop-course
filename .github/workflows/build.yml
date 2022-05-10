@@ -16,6 +16,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build book
         run: jupyter book build ./introduction/
+      - name: Modify html
+        run: |
+          python -c 'from scripts import insert_line_in_all_html
+          insert_line_in_all_html("./introduction/_build/html/")'
       - name: Upload to portal
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
@@ -23,4 +27,4 @@ jobs:
           username: ${{ secrets.SHOP_PORTAL_FTP_USERNAME }}
           password: ${{ secrets.SHOP_PORTAL_FTP_PASSWORD }}
           local-dir: ./introduction/_build/html/
-          server-dir: doc/course/html/
+          server-dir: doc/course/introduction/html/
