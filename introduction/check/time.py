@@ -1,8 +1,8 @@
 import pandas as pd
 
-from corrector.corrector import *
+from check.check_button import *
 
-def check_time_resolution1(shop):
+def check1(shop):
     def check(shop):
         time_res = shop.get_time_resolution()
         if time_res['starttime'] + pd.Timedelta(days=2) == time_res['endtime']:
@@ -11,7 +11,7 @@ def check_time_resolution1(shop):
             return False, 'Wrong end time'
     generate_button(shop, check)
 
-def check_time_resolution2(shop):
+def check2(shop):
     def check(shop):
         time_res = shop.get_time_resolution()
         if time_res['timeunit'] != 'minute':
