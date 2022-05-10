@@ -1,10 +1,8 @@
 format: jb-book
 root: intro
-parts:
-- caption: Introduction
-  chapters:
-  - file: time
-  - file: objects
-  - file: attributes
-  - file: relations
-  - file: commands
+chapters:
+- file: time
+- file: objects
+- file: attributes
+- file: relations
+- file: commands
