@@ -14,12 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build book
-        run: jupyter book build .
+        run: jupyter book build ./introduction/
       - name: Upload to portal
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: shop.sintef.energy
           username: ${{ secrets.SHOP_PORTAL_FTP_USERNAME }}
           password: ${{ secrets.SHOP_PORTAL_FTP_PASSWORD }}
-          local-dir: ./_build/html/
+          local-dir: ./introduction/_build/html/
           server-dir: doc/course/html/
