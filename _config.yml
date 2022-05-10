@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: SHOP examples and tutorials
+title: pySHOP course
 author: SINTEF Energy Research
 logo: shop_logo.png
 only_build_toc_files: true
