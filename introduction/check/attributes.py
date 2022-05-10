@@ -21,27 +21,37 @@ def check1(shop):
             if not shop.model.plant.Plant1.penstock_loss.get() == [0.001, 0.002]:
                 success = False
                 text += '"Plant1" penstock loss not set correctly. '
-            if not all(
-                shop.model.plant.Plant1.production_schedule.get().values ==
-                [ 0.,  0.,  0.,  0.,  0.,  0., 10., 10., 10., 10., 10., 10., 10.,
-                10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10.]
-            ):
+            production_schedule = shop.model.plant.Plant1.production_schedule.get()
+            if production_schedule is None:
                 success = False
-                text += 'Production schedule not set correctly. '
+                text += '"Plant1" production schedule has not been set. '
+            else:
+                if not all(
+                    production_schedule.values ==
+                    [ 0.,  0.,  0.,  0.,  0.,  0., 10., 10., 10., 10., 10., 10., 10.,
+                    10., 10., 10., 10., 10., 10., 10., 10., 10., 10., 10.]
+                ):
+                    success = False
+                    text += 'Production schedule not set correctly. '
 
         if not 'Gen1' in shop.model.generator.get_object_names():
             success = False
             text += '"Gen1" has not been added to the model. '
         else:
-            gen_eff_curve = pd.Series(
+            gen_eff_curve_ref = pd.Series(
                 index=[10,20,30],
                 data=[90,93,95]
             )
-            if not all(
-                shop.model.generator.Gen1.gen_eff_curve.get() == gen_eff_curve
-            ):
+            gen_eff_curve = shop.model.generator.Gen1.gen_eff_curve.get()
+            if gen_eff_curve is None:
                 success = False
-                text += 'Generator efficiency curve not set correctly. '
+                text += '"Gen1" gen_eff_curve has not been set. '
+            else:
+                if not all(
+                    gen_eff_curve == gen_eff_curve_ref
+                ):
+                    success = False
+                    text += 'Generator efficiency curve not set correctly. '
         
         return success, text
     generate_button(shop, check)
