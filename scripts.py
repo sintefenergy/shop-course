@@ -1,21 +1,19 @@
 import os
 
-def insert_line_in_file(filename: str, line_no: int, line_str: str):
+def insert_line_in_file(filename: str):
     with open(filename, "r", encoding="utf8") as f:
         contents = f.readlines()
-
-    contents.insert(line_no, line_str)
+    if len(contents) > 3:
+        if "<html>" in contents[3]:
+            contents.insert(4, "  <script>document.domain='sintef.energy';</script>\n")
 
     with open(filename, "w", encoding="utf8") as f:
         contents = "".join(contents)
         f.write(contents)
 
 def insert_line_in_all_html(folder):
-    for file in os.listdir(folder):
-        if file.endswith(".html") and not file.startswith("index"):
-            print(os.path.join(folder, file))
-            insert_line_in_file(
-                os.path.join(folder, file),
-                4,
-                "  <script>document.domain='sintef.energy';</script>\n"
-            )
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            if file.endswith(".html"):
+                print(os.path.join(root, file))
+                insert_line_in_file(os.path.join(root, file))
