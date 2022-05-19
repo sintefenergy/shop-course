@@ -1,6 +1,7 @@
 name: Build course
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:
