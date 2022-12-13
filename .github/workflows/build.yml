@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: shopjupyterhubacr.azurecr.io/shop/linux/python3.9/vlab:latest
+      image: shopjupyterhubacr.azurecr.io/shop/linux/python3.10/vlab:latest
       options: --user root -e GRANT_SUDO=yes
       credentials:
         username: ${{ secrets.ACR_USERNAME }}
