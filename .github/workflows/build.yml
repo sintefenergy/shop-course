@@ -21,11 +21,11 @@ jobs:
         run: |
           python -c 'from scripts import insert_line_in_all_html
           insert_line_in_all_html("./introduction/_build/html/")'
-      - name: Upload to portal
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: shop.sintef.energy
-          username: ${{ secrets.SHOP_PORTAL_FTP_USERNAME }}
-          password: ${{ secrets.SHOP_PORTAL_FTP_PASSWORD }}
-          local-dir: ./introduction/_build/html/
-          server-dir: doc/course/introduction/html/
+#       - name: Upload to portal
+#         uses: SamKirkland/FTP-Deploy-Action@4.3.0
+#         with:
+#           server: shop.sintef.energy
+#           username: ${{ secrets.SHOP_PORTAL_FTP_USERNAME }}
+#           password: ${{ secrets.SHOP_PORTAL_FTP_PASSWORD }}
+#           local-dir: ./introduction/_build/html/
+#           server-dir: doc/course/introduction/html/
